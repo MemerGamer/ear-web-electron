@@ -5,14 +5,13 @@ let mainWindow;
 
 app.on("ready", () => {
   Menu.setApplicationMenu(null);
-  
+
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: true,
-      webSecurity: true,
       experimentalFeatures: true,
       preload: path.join(__dirname, "preload.js"), // Optional, for communication with renderer
     },
@@ -66,7 +65,7 @@ app.on("ready", () => {
   });
 
   // Load the main HTML file
-  mainWindow.loadFile(path.join(__dirname, "res", "index.html"));
+  mainWindow.loadFile(path.join(__dirname, "../../resources/res", "index.html"));
 
   // Uncomment this to open DevTools by default
   // mainWindow.webContents.openDevTools();
