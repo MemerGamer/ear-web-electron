@@ -1,0 +1,40 @@
+{
+  "name": "ear-web-electron",
+  "version": "1.0.0",
+  "description": "![Ear(web) Logo](res/icons/256x256.png)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron . --no-sandbox",
+    "build": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.MemerGamer.ear-web-electron",
+    "productName": "EarWeb Electron",
+    "files": [
+      "**/*",
+      "!node_modules"
+    ],
+    "extraResources": [
+      "res/**"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "res/icons/256x256.png"
+    },
+    "linux": {
+      "icon": "res/icons"
+    },
+    "mac": {
+      "icon": "res/icons/256x256.png"
+    }
+  }
+}
