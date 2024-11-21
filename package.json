@@ -1,15 +1,20 @@
 {
   "name": "ear-web-electron",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "EarWeb Electron Application",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:nomac": "electron-builder --win --linux",
+    "build:all": "electron-builder --win --mac --linux"
   },
   "keywords": [],
   "author": "Kovacs Balint Hunor <kovacsbalinthunor13@gmail.com>",
-  "license": "ISC",
+  "license": "GNU",
   "devDependencies": {
     "electron": "^33.2.0",
     "electron-builder": "^25.1.8"
@@ -19,7 +24,8 @@
     "productName": "EarWeb Electron",
     "files": [
       "**/*",
-      "!node_modules"
+      "!node_modules",
+      "!res/**"
     ],
     "extraResources": [
       "res/**"
