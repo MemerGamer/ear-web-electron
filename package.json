@@ -53,7 +53,7 @@
         "dmg",
         "zip"
       ],
-      "icon": "res/icons/256x256.png"
+      "icon": "res/icons/512x512.png"
     }
   }
 }
