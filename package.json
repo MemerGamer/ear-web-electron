@@ -1,14 +1,14 @@
 {
   "name": "ear-web-electron",
   "version": "1.0.0",
-  "description": "![Ear(web) Logo](res/icons/256x256.png)",
+  "description": "EarWeb Electron Application",
   "main": "main.js",
   "scripts": {
-    "start": "electron . --no-sandbox",
+    "start": "electron .",
     "build": "electron-builder"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kovacs Balint Hunor <kovacsbalinthunor13@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "electron": "^33.2.0",
@@ -28,12 +28,25 @@
       "output": "dist"
     },
     "win": {
+      "target": [
+        "nsis", 
+        "portable"
+      ],
       "icon": "res/icons/256x256.png"
     },
     "linux": {
-      "icon": "res/icons"
+      "target": [
+        "AppImage", 
+        "deb"
+      ],
+      "icon": "res/icons",
+      "category": "Utility"
     },
     "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "icon": "res/icons/256x256.png"
     }
   }

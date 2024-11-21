@@ -1,9 +1,13 @@
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 const path = require("path");
+
 contextBridge.exposeInMainWorld("api", {
-  sendMessage: (msg) => console.log(msg),
-  navigate: (givenPath) => {
-    // window.location.href = `${path}.html`;
-    path.join(__dirname, `../res/${givenPath}.html`);
-  },
+    // Dynamically construct the correct path to the HTML file
+    getHtmlPath: (fileName) => {
+        const basePath = path.join(__dirname, "res", "MainControl");
+        return `file://${path.join(basePath, fileName)}`;
+    },
+    sendMessage: (msg) => console.log(msg),
 });
+
+console.log("Preload script loaded");

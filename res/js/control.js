@@ -340,7 +340,7 @@ async function updateBudsInfo(imageOnly = false) {
           console.log("Connected to Bluetooth device successfully.");
           return;
         } catch (error) {
-          window.api.navigate("index.html");
+          window.location.href = "index.html";
         }
       }
     }

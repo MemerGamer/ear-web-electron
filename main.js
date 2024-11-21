@@ -1,20 +1,18 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 const path = require("path");
 
 let mainWindow;
-app.commandLine.appendSwitch("no-sandbox"); // Disable sandbox for Electron
 
 app.on("ready", () => {
+  Menu.setApplicationMenu(null);
+  
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      sandbox: false, // Disable sandbox to allow Web Serial API access
       contextIsolation: true,
-      enableRemoteModule: false,
-      nodeIntegration: false,
+      nodeIntegration: true,
       webSecurity: true,
-      allowRunningInsecureContent: false,
       experimentalFeatures: true,
       preload: path.join(__dirname, "preload.js"), // Optional, for communication with renderer
     },

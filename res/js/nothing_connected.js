@@ -5,33 +5,34 @@ let operationList = {};
 async function switchViewFromModelID(model, sku) {
   localStorage.setItem("model", JSON.stringify(model));
   localStorage.setItem("sku", sku);
-  if (sku === null || sku === "") {
-    document.getElementById("scan_button-c").innerText = "Incompatible Device";
-    return;
+  if (!sku) {
+      document.getElementById("scan_button-c").innerText = "Incompatible Device";
+      return;
   }
+
   console.log("Switching view from model ID " + model.base);
-  if (model.base == "B181") {
-    window.api.navigate("MainControl_one");
-  } else if (model.base == "B157") {
-    window.api.navigate("MainControl_sticks");
-  } else if (model.base == "B155") {
-    window.api.navigate("MainControl_two");
-  } else if (model.base == "B163") {
-    window.api.navigate("MainControl_corsola");
-  } else if (model.base == "B171") {
-    window.api.navigate("MainControl_twos");
-  } else if (model.base == "B172") {
-    window.api.navigate("MainControl_espeon");
-  } else if (model.base == "B168") {
-    window.api.navigate("MainControl_donphan");
-  } else if (model.base == "B174") {
-    window.api.navigate("MainControl_flaaffy");
-  } else if (model.base == "B162") {
-    window.api.navigate("MainControl_cleffa");
-  } else {
-    document.getElementById("scan_button-c").innerText = "Incompatible Device";
+
+  let htmlFileName = "";
+  switch (model.base) {
+      case "B181": htmlFileName = "MainControl_one.html"; break;
+      case "B157": htmlFileName = "MainControl_sticks.html"; break;
+      case "B155": htmlFileName = "MainControl_two.html"; break;
+      case "B163": htmlFileName = "MainControl_corsola.html"; break;
+      case "B171": htmlFileName = "MainControl_twos.html"; break;
+      case "B172": htmlFileName = "MainControl_espeon.html"; break;
+      case "B168": htmlFileName = "MainControl_donphan.html"; break;
+      case "B174": htmlFileName = "MainControl_flaaffy.html"; break;
+      case "B162": htmlFileName = "MainControl_cleffa.html"; break;
+      default:
+          document.getElementById("scan_button-c").innerText = "Incompatible Device";
+          return;
   }
+
+  // Use the API exposed in preload.js to get the correct path
+  const htmlPath = window.api.getHtmlPath(htmlFileName);
+  window.location.href = htmlPath;
 }
+
 async function loadDevicePage(device) {
   console.log("Loading device page for " + device);
   connectDeviceFromList(device);
