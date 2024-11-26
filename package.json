@@ -1,0 +1,59 @@
+{
+  "name": "ear-web-electron",
+  "version": "1.0.1",
+  "description": "EarWeb Electron Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:nomac": "electron-builder --win --linux",
+    "build:all": "electron-builder --win --mac --linux"
+  },
+  "keywords": [],
+  "author": "Kovacs Balint Hunor <kovacsbalinthunor13@gmail.com>",
+  "license": "GNU",
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.MemerGamer.ear-web-electron",
+    "productName": "EarWeb Electron",
+    "files": [
+      "**/*",
+      "!node_modules",
+      "!res/**"
+    ],
+    "extraResources": [
+      "res/**"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis", 
+        "portable"
+      ],
+      "icon": "res/icons/256x256.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage", 
+        "deb"
+      ],
+      "icon": "res/icons",
+      "category": "Utility"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "res/icons/512x512.png"
+    }
+  }
+}
