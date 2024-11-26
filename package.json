@@ -1,6 +1,6 @@
 {
   "name": "ear-web-electron",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "EarWeb Electron Application",
   "main": "main.js",
   "scripts": {
