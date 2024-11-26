@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, dialog } = require("electron");
 const path = require("path");
 
 let mainWindow;
@@ -7,8 +7,8 @@ app.on("ready", () => {
   Menu.setApplicationMenu(null);
 
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 720,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: true,
@@ -20,7 +20,7 @@ app.on("ready", () => {
   // Handle the select-serial-port event
   mainWindow.webContents.session.on(
     "select-serial-port",
-    (event, portList, webContents, callback) => {
+    async (event, portList, webContents, callback) => {
       console.log("Available serial ports:", portList);
 
       // Add listeners for serial ports being added or removed
@@ -32,18 +32,48 @@ app.on("ready", () => {
         "serial-port-removed",
         (event, port) => {
           console.log("Serial port removed:", port);
-        },
+        }
       );
 
       event.preventDefault(); // Prevent the default behavior of the event
-
-      // If there are available serial ports, pass the first one back to the callback
       if (portList && portList.length > 0) {
-        callback(portList[0].portId); // Select the first available port
+        // Create an array of display names: Device Name (Port Name)
+        const portNames = portList.map((port) => {
+          const deviceName = port.displayName || "Unknown Device"; // Use `deviceName` if available
+          const portName = port.portName || "Unknown Port"; // Fallback if no port name
+          return `${deviceName} | (${portName})`;
+        });
+
+        // Show a dialog for the user to select a device
+        const { response } = await dialog.showMessageBox(mainWindow, {
+          type: "question",
+          buttons: [...portNames, "Cancel"],
+          title: "Select Bluetooth Headset",
+          message:
+            "Please select the Bluetooth headset you want to connect to:",
+          cancelId: portNames.length, // Index of the Cancel button
+        });
+
+        if (response < portNames.length) {
+          // The user selected a valid device
+          const selectedPort = portList[response];
+          console.log("User selected:", selectedPort);
+          callback(selectedPort.portId);
+        } else {
+          // The user canceled the selection
+          console.log("User canceled device selection");
+          callback(""); // No device selected
+        }
       } else {
-        callback(""); // No matching devices found
+        dialog.showMessageBoxSync(mainWindow, {
+          type: "warning",
+          title: "No Devices Found",
+          message:
+            "No Bluetooth devices were found. Please ensure your headset is discoverable.",
+        });
+        callback(""); // No devices to select
       }
-    },
+    }
   );
 
   // Set permission check handler for serial port access
@@ -53,7 +83,7 @@ app.on("ready", () => {
         return true; // Allow access if the security origin is file://
       }
       return false; // Deny access otherwise
-    },
+    }
   );
 
   // Set device permission handler for serial devices
@@ -65,7 +95,9 @@ app.on("ready", () => {
   });
 
   // Load the main HTML file
-  mainWindow.loadFile(path.join(__dirname, "../../resources/res", "index.html"));
+  mainWindow.loadFile(
+    path.join(__dirname, "../../resources/res", "index.html")
+  );
 
   // Uncomment this to open DevTools by default
   // mainWindow.webContents.openDevTools();
