@@ -28,22 +28,31 @@ app.on("ready", () => {
         console.log("Serial port added:", port);
       });
 
-      mainWindow.webContents.session.on("serial-port-removed", (event, port) => {
-        console.log("Serial port removed:", port);
-      });
+      mainWindow.webContents.session.on(
+        "serial-port-removed",
+        (event, port) => {
+          console.log("Serial port removed:", port);
+        }
+      );
 
       event.preventDefault(); // Prevent the default behavior of the event
 
       if (portList && portList.length > 0) {
-        // Create an array of port names to display in the dialog
-        const portNames = portList.map((port) => `${port.portName} (${port.manufacturer || "Unknown Manufacturer"})`);
+        // Create an array of display names: Device Name (Port Name) - Manufacturer
+        const portNames = portList.map((port) => {
+          const deviceName = port.deviceName || "Unknown Device"; // Use `deviceName` if available
+          const portName = port.portName || "Unknown Port"; // Fallback if no port name
+          const manufacturer = port.manufacturer || "Unknown Manufacturer"; // Fallback if no manufacturer
+          return `${deviceName} (${portName}) - ${manufacturer}`;
+        });
 
         // Show a dialog for the user to select a device
         const { response } = await dialog.showMessageBox(mainWindow, {
           type: "question",
           buttons: [...portNames, "Cancel"],
           title: "Select Bluetooth Headset",
-          message: "Please select the Bluetooth headset you want to connect to:",
+          message:
+            "Please select the Bluetooth headset you want to connect to:",
           cancelId: portNames.length, // Index of the Cancel button
         });
 
@@ -61,11 +70,12 @@ app.on("ready", () => {
         dialog.showMessageBoxSync(mainWindow, {
           type: "warning",
           title: "No Devices Found",
-          message: "No Bluetooth devices were found. Please ensure your headset is discoverable.",
+          message:
+            "No Bluetooth devices were found. Please ensure your headset is discoverable.",
         });
         callback(""); // No devices to select
       }
-    },
+    }
   );
 
   // Set permission check handler for serial port access
@@ -75,7 +85,7 @@ app.on("ready", () => {
         return true; // Allow access if the security origin is file://
       }
       return false; // Deny access otherwise
-    },
+    }
   );
 
   // Set device permission handler for serial devices
@@ -87,7 +97,9 @@ app.on("ready", () => {
   });
 
   // Load the main HTML file
-  mainWindow.loadFile(path.join(__dirname, "../../resources/res", "index.html"));
+  mainWindow.loadFile(
+    path.join(__dirname, "../../resources/res", "index.html")
+  );
 
   // Uncomment this to open DevTools by default
   // mainWindow.webContents.openDevTools();
