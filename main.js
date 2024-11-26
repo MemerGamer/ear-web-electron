@@ -17,6 +17,7 @@ app.on("ready", () => {
     },
   });
 
+
   // Handle the select-serial-port event
   mainWindow.webContents.session.on(
     "select-serial-port",
@@ -38,12 +39,12 @@ app.on("ready", () => {
       event.preventDefault(); // Prevent the default behavior of the event
 
       if (portList && portList.length > 0) {
-        // Create an array of display names: Device Name (Port Name) - Manufacturer
+        // TODO: refactor device name, get from bluetooth devices directly not from port
+        // Create an array of display names: Device Name (Port Name)
         const portNames = portList.map((port) => {
           const deviceName = port.deviceName || "Unknown Device"; // Use `deviceName` if available
           const portName = port.portName || "Unknown Port"; // Fallback if no port name
-          const manufacturer = port.manufacturer || "Unknown Manufacturer"; // Fallback if no manufacturer
-          return `${deviceName} (${portName}) - ${manufacturer}`;
+          return `${deviceName} (${portName})`;
         });
 
         // Show a dialog for the user to select a device
@@ -102,7 +103,7 @@ app.on("ready", () => {
   );
 
   // Uncomment this to open DevTools by default
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 });
 
 app.on("window-all-closed", () => {
