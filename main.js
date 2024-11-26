@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, dialog } = require("electron");
 const path = require("path");
 
 let mainWindow;
@@ -20,7 +20,7 @@ app.on("ready", () => {
   // Handle the select-serial-port event
   mainWindow.webContents.session.on(
     "select-serial-port",
-    (event, portList, webContents, callback) => {
+    async (event, portList, webContents, callback) => {
       console.log("Available serial ports:", portList);
 
       // Add listeners for serial ports being added or removed
@@ -28,20 +28,42 @@ app.on("ready", () => {
         console.log("Serial port added:", port);
       });
 
-      mainWindow.webContents.session.on(
-        "serial-port-removed",
-        (event, port) => {
-          console.log("Serial port removed:", port);
-        },
-      );
+      mainWindow.webContents.session.on("serial-port-removed", (event, port) => {
+        console.log("Serial port removed:", port);
+      });
 
       event.preventDefault(); // Prevent the default behavior of the event
 
-      // If there are available serial ports, pass the first one back to the callback
       if (portList && portList.length > 0) {
-        callback(portList[0].portId); // Select the first available port
+        // Create an array of port names to display in the dialog
+        const portNames = portList.map((port) => `${port.portName} (${port.manufacturer || "Unknown Manufacturer"})`);
+
+        // Show a dialog for the user to select a device
+        const { response } = await dialog.showMessageBox(mainWindow, {
+          type: "question",
+          buttons: [...portNames, "Cancel"],
+          title: "Select Bluetooth Headset",
+          message: "Please select the Bluetooth headset you want to connect to:",
+          cancelId: portNames.length, // Index of the Cancel button
+        });
+
+        if (response < portNames.length) {
+          // The user selected a valid device
+          const selectedPort = portList[response];
+          console.log("User selected:", selectedPort);
+          callback(selectedPort.portId);
+        } else {
+          // The user canceled the selection
+          console.log("User canceled device selection");
+          callback(""); // No device selected
+        }
       } else {
-        callback(""); // No matching devices found
+        dialog.showMessageBoxSync(mainWindow, {
+          type: "warning",
+          title: "No Devices Found",
+          message: "No Bluetooth devices were found. Please ensure your headset is discoverable.",
+        });
+        callback(""); // No devices to select
       }
     },
   );
