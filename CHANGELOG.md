@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/MemerGamer/ear-web-electron/compare/v1.0.2...v1.0.3) (2025-02-28)
+
+
+### Miscellaneous Chores
+
+* release 1.0.3 ([b136228](https://github.com/MemerGamer/ear-web-electron/commit/b136228fd292ca0cdf86fbcec1cb9581b081e2e1))
+
 ## [1.0.2](https://github.com/MemerGamer/ear-web-electron/compare/v1.0.1...v1.0.2) (2024-11-26)
 
 
