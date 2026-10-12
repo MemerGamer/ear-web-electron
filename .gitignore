@@ -9,3 +9,6 @@ electron/out
 *.spec 
 /.htaccess
 .DS_Store
+.claude/settings.local.json
+react-app/
+tools/*

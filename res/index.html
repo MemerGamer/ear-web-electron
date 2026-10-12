@@ -114,14 +114,44 @@
                 .faq-container a:hover {
                     text-decoration: underline;
                 }
+        #kofi_container {
+            text-align: center;
+            margin: 30px auto 0;
+            padding-bottom: 30px;
+        }
+
+        #kofi_button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background-color: #333;
+            color: white;
+            font-size: 0.85rem;
+            text-decoration: none;
+            border: 2px solid transparent;
+            transition: transform 0.15s ease-in-out, border-color 0.15s ease-in-out;
+        }
+
+            #kofi_button:hover {
+                transform: scale(1.05);
+                border-color: #e82525;
+            }
+
+            #kofi_button svg {
+                width: 18px;
+                height: 18px;
+                fill: #e82525;
+            }
     </style>
 </head>
 
 <body style="width: 80%; height: 710px; position: absolute; background: #21201f;  left: 50%; -ms-transform: translate(-50%, 0); transform: translate(-50%, 0); color:white;">
 
     <div id="announcement-banner">
-        <div id="announcement-date">2024-10-05</div>
-        <div id="announcement-content">Ear (open) and Ear (a) are now supported!</div>
+        <div id="announcement-date">2026-10-07</div>
+        <div id="announcement-content">Nothing Headphone (1) Pro is now supported</div>
     </div>
 
     <div id="logo_container">
@@ -129,11 +159,16 @@
         <div id="name_container">ear (web)</div>
     </div>
 
-    <div id="scan_button" onclick="scanNewDevicesSerial()">
+    <div id="scan_button" onclick="scanNewDevicesFastpair()">
         <div id="scan_button-c">Connect</div>
     </div>
 
+
     <div class="faq-container">
+        <p>If you face any issues, please check the following:<br>
+            - Open an issue on Github <a href="https://github.com/radiance-project/ear-web/issues">here</a> With your device model and browser version.<br>
+            - Or join the Discord server <a href="https://discord.gg/FNmzBSZjFR">here</a> to talk to the developers and other users for support.
+        </p>
         <details>
             <summary>Which browsers are supported?</summary>
             <p>ear (web) supports any browser based on Chromium 117+ such as Google Chrome, Microsoft Edge, Brave, Arc</p>
@@ -147,17 +182,31 @@
                 - Nothing ear (2)<br />
                 - CMF Buds Pro<br />
                 - CMF Buds<br />
+                - CMF Neckband Pro<br />
                 - Nothing Ear<br />
                 - Nothing Ear (a)<br />
                 - CMF Buds Pro 2<br />
                 - Nothing Ear (open)<br />
+                - CMF Buds 2a<br />
+                - CMF Buds 2<br />
+                - CMF Buds 2 Plus<br />
+                - Nothing Headphone (1)<br />
+                - CMF Headphone Pro<br />
+                - Nothing Ear (3)<br />
+                - CMF Clip Pro<br />
+                - Nothing Headphone (a)<br />
+                - Nothing Ear (3a)<br />
+                - Nothing Headphone (1) Pro<br />
             </p>
         </details>
-        <details>
-            <summary>I found a bug/have a feature suggestion, can I contact you?</summary>
-            <p>Please open an issue on the github repository <a href="https://github.com/radiance-project/ear-web/issues">https://github.com/radiance-project/ear-web/issues</a></p>
-        </details>
     </div>
+
+    <footer id="kofi_container">
+        <a id="kofi_button" href="https://ko-fi.com/rapidzapper" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8h15v6a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V8zm15 1h1.5a2.5 2.5 0 0 1 0 5H17v-2h1.5a.5.5 0 0 0 0-1H17V9zM9.5 10.2c-.9-.9-2.6-.4-2.6 1 0 1.2 1.4 2.3 2.6 3.3 1.2-1 2.6-2.1 2.6-3.3 0-1.4-1.7-1.9-2.6-1z"/></svg>
+            Support ear (web) on Ko-fi
+        </a>
+    </footer>
 
     <script>
         async function forgetAllDevices() {
@@ -175,8 +224,6 @@
             const bannerDate = new Date(dateBanner.innerHTML);
             const currentDate = new Date();
             const diffInDays = (currentDate - bannerDate) / (1000 * 60 * 60 * 24);
-
-            console.log(diffInDays);    
             if (diffInDays <= 7) {
                 banner.style.display = 'inline-block';
             }

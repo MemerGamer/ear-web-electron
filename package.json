@@ -1,6 +1,6 @@
 {
   "name": "ear-web-electron",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "EarWeb Electron Application",
   "main": "main.js",
   "scripts": {
@@ -10,22 +10,24 @@
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux",
     "build:nomac": "electron-builder --win --linux",
-    "build:all": "electron-builder --win --mac --linux"
+    "build:all": "electron-builder --win --mac --linux",
+    "build:css": "tailwindcss -i tailwind-input.css -o res/tailwind.css --minify"
   },
   "keywords": [],
   "author": "Kovacs Balint Hunor <kovacsbalinthunor13@gmail.com>",
-  "license": "GNU",
+  "license": "AGPL-3.0",
   "devDependencies": {
-    "electron": "^33.2.0",
-    "electron-builder": "^25.1.8"
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "tailwindcss": "^3.4.19"
   },
   "build": {
     "appId": "com.MemerGamer.ear-web-electron",
     "productName": "EarWeb Electron",
     "files": [
-      "**/*",
-      "!node_modules",
-      "!res/**"
+      "main.js",
+      "preload.js",
+      "package.json"
     ],
     "extraResources": [
       "res/**"
@@ -35,14 +37,14 @@
     },
     "win": {
       "target": [
-        "nsis", 
+        "nsis",
         "portable"
       ],
       "icon": "res/icons/256x256.png"
     },
     "linux": {
       "target": [
-        "AppImage", 
+        "AppImage",
         "deb"
       ],
       "icon": "res/icons",
@@ -55,5 +57,10 @@
       ],
       "icon": "res/icons/512x512.png"
     }
+  },
+  "homepage": "https://github.com/MemerGamer/ear-web-electron",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MemerGamer/ear-web-electron.git"
   }
 }

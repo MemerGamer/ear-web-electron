@@ -8,23 +8,24 @@
     <title>ear (web)</title>
     <link rel="icon" href="icons/16x16.png" />
     <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@1.1.3/dist/chartjs-plugin-dragdata.min.js"></script>
+    <script src="../js/vendor/chart-2.9.4.min.js"></script>
+    <script src="../js/vendor/chartjs-plugin-dragdata-1.1.3.min.js"></script>
     <link href="../global.css" rel="stylesheet" />
+    <script src="../js/viewport_scale.js"></script>
+    <link href="../tailwind.css" rel="stylesheet" />
 </head>
 
-<body style="width: 800px; height: 710px; position: absolute; background: #21201f; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); ">
+<body style="width: 100vw; height: 100vh; margin: 0; background: #21201f; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+    <div id="device_loading_overlay" style="position: fixed; inset: 0; z-index: 9999; background: #21201f; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <img src="../assets/loading.svg" alt="loading_animation" class="h-[80px] w-[80px] m-auto" />
+        <div style="color: white; margin-top: 16px; font-size: 13px; font-family: NothingNormal2;">Setting up your device...</div>
+    </div>
     <div id="container_one"
          class=" w-fit text-white overflow-hidden float-right ease-in-out duration-300"
-         style="font-family: NothingNormal2; height: 710px; width: 800px;">
-        <div id="container_two" class=" w-fit backdrop-blur-2xl text-white ease-in-out duration-300"
-             style="font-family: NothingNormal2; height: 710px; width: 800px; margin-top: -20px; ">
-            <div id="popup_container" class="h-screen w-full absolute z-[-10] opacity-0 ease-in-out duration-300">
-                <div id="popup_background" class="h-screen w-full bg-black opacity-[0.5]" onclick="closePopUp()"></div>
-                <div id="popup_content" class="z-[-10]">
-                    ERROR: There was an error displaying this popup. Please report it to the developers with steps to reproduce the error
-                </div>
-            </div>
+         style="font-family: NothingNormal2; min-height: 710px; width: 800px;">
+        <div id="container_two" class="relative w-fit backdrop-blur-2xl text-white ease-in-out duration-300"
+             style="font-family: NothingNormal2; min-height: 710px; width: 800px; margin-top: -20px; ">
+            <div id="popup_container_placeholder"></div>
 
             <section class="w-full h-8 absolute" style="z-index: 300;">
                 <div id="draggable" class="w-[750px] h-8 absolute"></div>
@@ -63,7 +64,7 @@
                     <div class="mt-1 bg-[#1B1D1F] rounded-xl pt-5 pb-5 mt-4">
                         <div id="setting_title" class=" text-sm ml-5 text-gray-200">1x Pinch</div>
                         <div id="settings_subtitle" class="text-sm ml-5 text-gray-500">
-                            Play / Pause music<br>Answere /
+                            Play / Pause music<br>Answer /
                             Hang up calls
                         </div>
                     </div>
@@ -76,122 +77,16 @@
                     <div name="logo" class="w-full" style="margin-bottom: 10px;">
                         <div id="prod_name" style="font-family: Ndot-55; opacity: 100; padding-top: 30px;"
                              class="w-full text-center pt-8 text-4xl duration-300 ease-in-out">ear (2)</div>
-                        <div id="image-container"
-                             class='justify-center items-center flex relative ease-in-out duration-300'>
-                            <div id="left_ear" class='w-52 ease-in-out duration-300'>
-                                <img src="../assets/nothing_connected2.webp"
-                                     class='h-44 ml-[40px] duration-500 ease-in-out relative cursor-pointer'
-                                     onclick="transToLeftGest('l'); loadCurrentGestures('l')" id="left_ear_peace"
-                                     style="z-Index:100; margin: 0 0 0 40px; transform: scale(0.85);" />
-                                <div id="left_ear_battery" class="ease-in-out duration-300" style="opacity: 100; margin-top: -10px;">
-                                    <div id="battery-l" class='text-center'>
-                                        40% L
-                                    </div>
-                                    <div id="battery_bar_l" class='w-20 m-auto mt-2 rounded-md bg-gray-600'>
-                                        <div id="battery_bar_fill_l" class="bg-white h-2 w-1/2 rounded-md"></div>
-                                    </div>
-                                    <div id="ring_button_l" class="text-center m-auto w-fit -mb-8 mt-3 ease-in-out duration-300" onclick="ringBudLeft()">
-                                        <div id="ring_button-l" class="p-1 pl-7 -mr-32 pr-7 border-red-900 border-[2px] text-red-900 cursor-pointer font-bold  rounded-full mr-3 text-sm hover:bg-red-900 hover:text-white ease-in-out duration-300" style="margin-right: 0px;">Ring</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="right_ear" class='w-52 w-34 ease-in-out duration-300'>
-                                <img src="../assets/nothing_connected.webp"
-                                     class='h-44 w-34 margin-auto duration-[2s] ease-in-out cursor-pointer'
-                                     onclick="transToLeftGest('r'); loadCurrentGestures('r')" id="right_ear_peace" style="margin: auto; transform: scale(0.85);" />
-                                <div id="right_ear_battery" class="ease-in-out duration-300" style="opacity: 100; margin-top: -10px;">
-                                    <div id="battery-r" class='text-center'>
-                                        40% R
-                                    </div>
-                                    <div id="battery_bar_r" class='w-20 m-auto mt-2 rounded-md bg-gray-600'>
-                                        <div id="battery_bar_fill_r" class="bg-white h-2 w-1/2 rounded-md"></div>
-                                    </div>
-                                    <div id="ring_button_r" class="text-center m-auto ml-14 w-fit -mb-8 mt-3 ease-in-out duration-300" onclick="ringBudRight()">
-                                        <div id="ring_button-r" class="p-1 pl-7 -mr-32 pr-7 border-red-900 border-[2px] text-red-900 cursor-pointer font-bold rounded-full text-sm hover:bg-red-900 hover:text-white ease-in-out duration-300" style="margin-right: 0px;">Ring</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="header_images_placeholder" data-header-variant="earbud"></div>
                     </div>
 
                     <div class="grid gap-4 grid-cols-2 grid-rows-1 m-5 -mt-3 mb-4" id="eq_container_t" class="relative">
                         <div id="pages_container" class="ease-in-out duration-300" style="opacity: 100; width: 305px;">
-                            <div id="eq_container" class="mt-12 bg-[#1B1D1F] ease-in-out duration-300 rounded-xl pt-2 pb-2 " style="height: 290px;">
+                            <div id="eq_container" class="mt-12 bg-[#1B1D1F] ease-in-out duration-300 rounded-xl pt-2 pb-2 ">
                                 <div id="eq_container_t" class="relative">
                                     <!-- PAGE 1 -->
                                     <div id="page_1_container" class="ease-in-out duration-300">
-                                        <div class="w-fit flex m-auto text-md mb-5 mt-2">
-                                            NOISE CONTROL
-                                        </div>
-                                        <div id="selector"
-                                             class="w-20 p-2 bg-white rounded-full h-[38px] -mb-[58px] ml-4 z-1 relative ease-in-out duration-200">
-                                        </div>
-                                        <div class="w-fit grid grid-cols-3 grid-rows-1 bg-black gap-4 m-auto mt-5 rounded-full ml">
-                                            <div id="one"
-                                                 class="p-2 text-center w-20 ease-in-out duration-150 z-[10] relative text-white cursor-pointer"
-                                                 onclick="setANC(0)">
-                                                <svg class="h-[23px] mt-[1px] ml-[20px] relative" id="ANC_on" style="width: 23px; fill: white !important;">
-                                                    <use xlink:href="../assets/anc_on_icon.svg#load"></use>
-                                                </svg>
-                                            </div>
-                                            <div id="two"
-                                                 class="p-2 text-center w-20 ease-in-out duration-150 z-[10] relative text-white cursor-pointer"
-                                                 onclick="setANC(1)">
-                                                <svg class="h-[23px] mt-[1px] ml-[20px] relative" id="trans_on" style="width: 23px; fill: white !important;">
-                                                    <use xlink:href="../assets/anc_transparent_icon.svg#load"></use>
-                                                </svg>
-                                            </div>
-                                            <div id="three"
-                                                 class="p-2 text-center w-20 ease-in-out duration-150 z-[10] relative text-white cursor-pointer"
-                                                 onclick="setANC(2)">
-                                                <svg class="h-[23px] mt-[1px] ml-[20px] relative" id="anc_off" style="width:23px; fill: white !important;">
-                                                    <use xlink:href="../assets/anc_off_icon.svg#load"></use>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div class="w-fit grid grid-cols-3 grid-rows-1 gap-4 m-auto text-[10px] mt-2">
-                                            <div id="desc_one" class=" text-center w-20">NOISE<br />CANCELLATION</div>
-                                            <div id="desc_two" class="text-center w-20">TRANSPARENCY</div>
-                                            <div id="desc_three" class=" text-center w-20">Off</div>
-                                        </div>
-                                        <div id="anc_strength_selector" class="ease-in-out duration-300">
-                                            <div class="grid ease-out duration-200 grid-cols-4 grid-rows-1 bg-black m-auto mt-2 rounded-full h-5 opacity-100" style="gap: 2rem; width: 190px;">
-                                                <div id="stage_one"
-                                                     class="p-2 text-center ease-in-out duration-150 z-[10] relative cursor-pointer"
-                                                     onclick="setANC(3)">
-                                                    <div id="stage_one_button"
-                                                         class="w-1 h-1 bg-white ease-in-out duration-200 rounded-full"></div>
-                                                </div>
-                                                <div id="stage_two"
-                                                     class="p-2 text-center ease-in-out duration-150 z-[10] relative cursor-pointer"
-                                                     onclick="setANC(4)">
-                                                    <div id="stage_two_button"
-                                                         class="w-1 h-1 bg-white ease-in-out duration-200 rounded-full ">
-                                                    </div>
-                                                </div>
-                                                <div id="stage_three"
-                                                     class="p-2 text-center ease-in-out duration-150 z-[10] relative cursor-pointer"
-                                                     onclick="setANC(5)">
-                                                    <div id="stage_three_button"
-                                                         class="w-1 h-1 bg-white ease-in-out duration-200 rounded-full ">
-                                                    </div>
-                                                </div>
-                                                <div id="stage_four"
-                                                     class="p-2 text-center ease-in-out duration-150 z-[10] relative cursor-pointer"
-                                                     onclick="setANC(6)">
-                                                    <div id="stage_four_button"
-                                                         class="w-1 h-1 bg-white ease-in-out duration-200 rounded-full">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-4 grid-rows-1 ease-out duration-200 m-auto text-[10px] opacity-100" style="margin-left: 45px; width: 190px; gap: 40px;">
-                                                <div id="desc_one" class="p-2 text-center ">HIGH</div>
-                                                <div id="desc_two" class="p-2 text-center " style="margin-left: 4px;">MID</div>
-                                                <div id="desc_two" class="p-2 text-center " style="margin-left: 3px;">LOW</div>
-                                                <div id="desc_two" class="p-2 text-left" style="margin-left: -13px">ADAPTIVE</div>
-                                            </div>
-
-                                        </div>
+                                        <div id="anc_widget_container" data-anc-variant="full"></div>
                                         <div id="personalised_ANC">
                                             <div class="settings-switch-container overflow-hidde grid grid-cols-2 grid-rows-1 mt-4">
                                                 <div style="width: 240px;">
@@ -214,60 +109,7 @@
                                     <!-- END PAGE 1 -->
                                     <!-- PAGE 2 -->
                                     <div id="page_2_container" class="ease-in-out duration-300" style="margin-top: -270px; position: relative; z-index: -1; opacity: 0;">
-                                        <div id="settings_title" class="w-fit flex m-auto text-md mb-5 mt-2">
-                                            QUICK SETTINGS
-                                        </div>
-                                        <div class="p-5 -mt-5">
-                                            <div class="settings-switch-container overflow-hidden">
-                                                <div id="inearswitchbutton" class="settings-switch-button">
-                                                    <div id="inearswitchindicator" class="settings-switch-indicator">
-                                                        <input type="checkbox" id="in_ear" class="settings-switch-checkbox" onclick="setInEar()"
-                                                               style="opacity: 0; width: 300px; height:300px; cursor: pointer; margin-top: -6px; margin-left: -35px" />
-                                                    </div>
-                                                </div>
-                                                <div class="settings-switch-label">In Ear Detection</div>
-                                            </div>
-                                            <div class="settings-switch-container overflow-hidde">
-                                                <div id="lowlatencyswitchbutton" class="settings-switch-button">
-                                                    <div id="lowlatencyswitchindicator" class="settings-switch-indicator">
-                                                        <input type="checkbox" id="low_latency" class="settings-switch-checkbox" onclick="setLatencyMode()"
-                                                               style="opacity: 0; width: 300px; height:300px; cursor: pointer; margin-top: -6px; margin-left: -35px" />
-                                                    </div>
-                                                </div>
-                                                <div class="settings-switch-label">Low Latency Mode</div>
-                                            </div>
-                                            <div class="grid grid-cols-2 grid-rows-1" style="margin-top: 10px; margin-bottom: -10px; margin-left: -10px; cursor: pointer;" onclick="showEarTipTestDialog()">
-                                                <div id="settinjgs-switch-label" class="settings-switch-label" style="margin-top: 3px;">Ear tip test</div>
-                                                <div id="arrow-icon">
-                                                    <img src="../assets/arrow_right.svg" alt="arrow-right" style="width: 20px; height: 20px; float: right;">
-                                                </div>
-                                            </div>
-                                            <div id="seperator" class="">
-                                                <div class="h-[2px] bg-gray-500 w-full rounded-xl mt-5" style="opacity: 0.5;">
-                                                </div>
-                                            </div>
-                                            <div class="grid grid-cols-2 grid-rows-2 -ml-5 mt-2">
-                                                <div id="setting_title" class="text-[12px] ml-5 text-gray-200 w-max">
-                                                    Firmware Version
-                                                </div>
-                                                <div id="settings_subtitle_firmware" class="text-[12px] ml-5 text-gray-500 flex" style="justify-content: right;">
-                                                    1.0.0
-                                                </div>
-                                            </div>
-                                            <div class="rounded-xl pt-5 pb-5 mt-1 grid grid-cols-2 grid-rows-1 -ml-16" id="case_ear">
-                                                <div id="setting_title" class=" text-sm ml-5 text-gray-200">
-                                                    <img id="case-img" src="../assets/ear_one_white_case.webp" class='mr-2 h-20 -mt-5 -mb-5 float-right' />
-                                                </div>
-                                                <div id="settings_subtitle" class="text-sm ml-5 text-white">
-                                                    <div id="battery-c" class='text-center'>
-                                                        40% CASE
-                                                    </div>
-                                                    <div id="battery_bar" class='w-20 m-auto mt-2 rounded-md bg-gray-600'>
-                                                        <div id="battery_bar_fill_c" class="bg-white h-2 w-1/2 rounded-md"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div id="quick_settings_container" data-qs-variant="full"></div>
                                     </div>
                                     <!-- END PAGE 2 -->
                                     <!-- END PAGE 2 -->
@@ -291,10 +133,10 @@
                                 </div>
                                 <div class="grid grid-cols-2 grid-rows-1">
                                     <div id="stage_one_selector" class="p-2 text-center ease-in-out duration-150 z-[10] relative cursor-pointer mt-1">
-                                        <div id="stage_one_selector_button" class="w-1 h-1 ease-in-out duration-200 rounded-full float-right" style="background-color: white;"></div>
+                                        <div id="stage_one_selector_button" class="w-1 h-1 ease-in-out duration-200 rounded-full m-auto" style="background-color: white;"></div>
                                     </div>
                                     <div id="stage_two_selector" class="p-2 text-center ease-in-out duration-150 z-[10] relative cursor-pointer mt-1">
-                                        <div id="stage_two_selector_button" class="w-1 h-1 ease-in-out duration-200 rounded-full float-left" style="background-color: #1B1D1F;">
+                                        <div id="stage_two_selector_button" class="w-1 h-1 ease-in-out duration-200 rounded-full m-auto" style="background-color: #6B7280;">
                                         </div>
                                     </div>
                                 </div>
@@ -326,7 +168,7 @@
                                     <div id="eq_label_treble" style="margin-left: 57px;">-3</div>
                                 </div>
                                 <div id="advancedEQmsg" style="width: 100%; height: 100px; overflow: hidden; display: none;text-align:center">
-                                    <p>Advanced EQ is enabled.</p>
+                                    <p style="cursor: pointer;" onclick="openAdvancedEQPanel()">Advanced EQ is enabled. Tap to edit.</p>
                                 </div>
                                 <div id="chart" style="width:100%; height: 100px; overflow: hidden;">
                                     <canvas id="myChart"></canvas>
@@ -371,10 +213,18 @@
         </div>
     </div>
     <script src="../js/transitions.js"></script>
+    <script src="../js/device_common.js"></script>
+    <script src="../js/gestures_common.js"></script>
+    <script src="../js/eq_common.js"></script>
     <script src="../js/eq_two.js"></script>
+    <script src="../js/advanced_eq.js"></script>
     <script type="text/javascript" src="../js/control.js"></script>
     <script src="../js/two.js"></script>
     <script src="../js/bluetooth_socket.js"></script>
+    <script src="../js/dual_connect.js"></script>
+    <script src="../js/audio_codec.js"></script>
+    <script src="../js/personal_sound.js"></script>
+    <script src="../js/versionUtils.js"></script>
     <script type="text/javascript">
         window.addEventListener('load', () => {
             updateBudsInfo();

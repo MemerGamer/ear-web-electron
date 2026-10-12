@@ -1,9 +1,35 @@
-const { app, BrowserWindow, Menu, dialog } = require("electron");
+const { app, BrowserWindow, Menu, dialog, protocol, net } = require("electron");
 const path = require("path");
+const { pathToFileURL } = require("url");
+
+protocol.registerSchemesAsPrivileged([{
+  scheme: "ear",
+  privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true },
+}]);
+const APP_ORIGIN = "ear://app";
 
 let mainWindow;
 
 app.on("ready", () => {
+  const resourceRoot = app.isPackaged
+    ? path.join(process.resourcesPath, "res")
+    : path.join(__dirname, "res");
+  protocol.handle("ear", (request) => {
+    const url = new URL(request.url);
+    if (url.host !== "app") return new Response("Forbidden", { status: 403 });
+    let resource = decodeURIComponent(url.pathname);
+    if (resource === "/") resource = "/index.html";
+    if (/^\/MainControl_[a-z_]+$/.test(resource)) {
+      resource = `/MainControl${resource}.html`;
+    }
+    const file = path.resolve(resourceRoot, `.${resource}`);
+    if (!file.startsWith(resourceRoot + path.sep)) {
+      return new Response("Forbidden", { status: 403 });
+    }
+    return net.fetch(pathToFileURL(file).href).catch(() =>
+      new Response("Not found", { status: 404 })
+    );
+  });
   Menu.setApplicationMenu(null);
 
   mainWindow = new BrowserWindow({
@@ -11,9 +37,9 @@ app.on("ready", () => {
     height: 720,
     webPreferences: {
       contextIsolation: true,
-      nodeIntegration: true,
+      nodeIntegration: false,
       experimentalFeatures: true,
-      preload: path.join(__dirname, "preload.js"), // Optional, for communication with renderer
+
     },
   });
 
@@ -79,7 +105,7 @@ app.on("ready", () => {
   // Set permission check handler for serial port access
   mainWindow.webContents.session.setPermissionCheckHandler(
     (webContents, permission, requestingOrigin, details) => {
-      if (permission === "serial" && details.securityOrigin === "file:///") {
+      if (permission === "serial" && details.securityOrigin === APP_ORIGIN) {
         return true; // Allow access if the security origin is file://
       }
       return false; // Deny access otherwise
@@ -88,16 +114,14 @@ app.on("ready", () => {
 
   // Set device permission handler for serial devices
   mainWindow.webContents.session.setDevicePermissionHandler((details) => {
-    if (details.deviceType === "serial" && details.origin === "file://") {
+    if (details.deviceType === "serial" && details.origin === APP_ORIGIN) {
       return true; // Allow access to serial devices from local files
     }
     return false; // Deny access otherwise
   });
 
   // Load the main HTML file
-  mainWindow.loadFile(
-    path.join(__dirname, "../../resources/res", "index.html")
-  );
+  mainWindow.loadURL(`${APP_ORIGIN}/index.html`);
 
   // Uncomment this to open DevTools by default
   // mainWindow.webContents.openDevTools();

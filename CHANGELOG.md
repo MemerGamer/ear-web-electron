@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0 (2026-10-12)
+
+- Sync all 62 upstream commits through `d076e13`.
+- Add the latest Nothing and CMF device support and upstream audio/control improvements.
+- Serve bundled resources through a secure Electron protocol, supporting upstream routes and configuration loading in development and packaged builds.
+- Update Electron and packaging tools; build Windows, macOS and Linux release assets automatically.
+
 ## [1.0.3](https://github.com/MemerGamer/ear-web-electron/compare/v1.0.2...v1.0.3) (2025-02-28)
 
 

@@ -12,13 +12,16 @@ var custom_values = [0, 0, 0];
 
 var current_eq;
 
-function updateIndicator(){
-    document.getElementById("eq_label_bass").innerText = custom_values[0];
-    document.getElementById("eq_label_mid").innerText = custom_values[1];
-    document.getElementById("eq_label_treble").innerText = custom_values[2];
-}
-
 function EQButtonPress(level, pos) {
+    if (level == 0 && typeof isLdacOpteoExclusive === "function" && isLdacOpteoExclusive()) {
+        showWarningPopup(`
+            <div class="w-fit flex m-auto text-md mb-2 mt-2 text-white text-center">Attention</div>
+            <div class="text-gray-400 text-sm text-center mb-4" style="width: 250px;">Dirac Opteo is not available when LDAC is activated.</div>
+            <div class="flex justify-center mt-4">
+                <button class="p-2 pl-6 pr-6 bg-black border-none border-[1px] text-white rounded-full hover:bg-[#1B1D1F] ease-in-out duration-300" onclick="closePopUp()">Okay</button>
+            </div>`);
+        return;
+    }
     setListeningMode(level);
     if (level == 6) {
         getCustomEQ();
@@ -26,12 +29,6 @@ function EQButtonPress(level, pos) {
         updateIndicator();
     }else document.getElementById("custom_eq_indicator").style.display = "none";
     setEQfromRead(level, pos);
-}
-
-function setCustomEQ(array) {
-    custom_values = array;
-    setCustom();
-    updateIndicator();
 }
 
 function setEQfromRead(level, pos) {
@@ -70,59 +67,16 @@ function setEQfromRead(level, pos) {
         setCustom(document.getElementById("buttonEQCustom"));
         updateIndicator();
         pos = 6;
+    } else if (level == 7) {
+        //For hoothoot Dirac EQ
+        document.querySelector("#chart").style.display = "none";
+        document.getElementById("custom_eq_indicator").style.display = "none";
+        pos = 0;
     }
     buttons[pos].style.backgroundColor = "#ffffff";
     buttons[pos].style.color = "#000000";
 }
 
-function resetOptions() {
-    options = {
-        tooltips: { enabled: false },
-        onClick: null,
-        elements: {
-            point: {
-                radius: 0
-            }
-        },
-        legend: {
-            display: false
-        },
-        responsive: true,
-        scales: {
-            xAxes: [{
-                gridLines: {
-                    display: false
-                }
-            }],
-            yAxes: [{
-                gridLines: {
-                    display: false
-                },
-                ticks: {
-                    display: false,
-                    min: 0,
-                    max: 10,
-                }
-            }],
-            x: {
-                ticks: {
-                    callback: () => ('')
-                }
-            },
-            y: {
-                display: false,
-                title: {
-                    display: false,
-                    text: 'Value'
-                },
-                suggestedMin: 0,
-                suggestedMax: 200,
-
-            },
-            events: []
-        }
-    }
-}
 resetOptions()
 
 
@@ -235,11 +189,3 @@ async function drawChart(data) {
     });
 }
 
-function clearButtons() {
-    var buttons = document.getElementsByClassName("eq-button");
-    for (let i = 0; i < buttons.length; i++) {
-        let button = buttons[i];
-        button.style.backgroundColor = "#000000";
-        button.style.color = "#ffffff";
-    }
-}
